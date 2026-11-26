@@ -152,8 +152,8 @@ export class AircallMCPServer {
 
   constructor(config: AircallMCPConfig) {
     this.client = createAircallClient(config.apiId, config.apiToken);
-    this.readOnly = config.readOnly ?? false;
-    this.enabledTools = this.parseToolsConfig(config.tools);
+    this.readOnly = config.readOnly ?? true;
+    this.enabledTools = this.parseToolsConfig(config.tools ?? 'aircall_list_calls,aircall_get_call,aircall_search_calls,aircall_list_users,aircall_list_tags');
 
     this.server = new Server(
       {
