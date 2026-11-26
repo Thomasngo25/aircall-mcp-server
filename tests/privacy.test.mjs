@@ -17,3 +17,17 @@ test('call detail exposes only approved analytics fields', async () => {
   assert.equal(result.user_id, 2);
   assert.deepEqual(result.tag_ids, [3]);
 });
+
+import { createUsersTools } from '../dist/tools/users.js';
+import { createTagsTools } from '../dist/tools/tags.js';
+import { AircallMCPServer } from '../dist/server.js';
+
+test('broad tool selection cannot expose sensitive read tools', () => {
+ const server = new AircallMCPServer({apiId:'synthetic',apiToken:'synthetic',tools:'all'});
+ assert.deepEqual(server.getToolNames().sort(), ['aircall_list_calls','aircall_get_call','aircall_search_calls','aircall_list_users','aircall_list_tags'].sort());
+});
+test('user and tag lists return IDs only', async () => {
+ const client = {get: async () => ({meta:{total:1,current_page:1,per_page:20},users:[{id:2,email:'synthetic@example.invalid'}],tags:[{id:3,name:'private'}]})};
+ assert.deepEqual((await createUsersTools(client).aircall_list_users.execute({})).users,[{id:2}]);
+ assert.deepEqual((await createTagsTools(client).aircall_list_tags.execute({})).tags,[{id:3}]);
+});
