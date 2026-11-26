@@ -281,7 +281,7 @@ export class AircallMCPServer {
           ],
         };
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
+        const errorMessage = 'Tool execution failed. Check configuration and retry safely.';
         return {
           content: [
             {
