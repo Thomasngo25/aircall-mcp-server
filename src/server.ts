@@ -229,7 +229,7 @@ export class AircallMCPServer {
     for (const [name, tool] of Object.entries(allTools)) {
       if (this.enabledTools.has(name)) {
         // If read-only mode, skip write tools
-        if (this.readOnly && !READ_ONLY_TOOLS.includes(name as typeof READ_ONLY_TOOLS[number])) {
+        if (this.readOnly && (!READ_ONLY_TOOLS.includes(name as typeof READ_ONLY_TOOLS[number]) || !['aircall_list_calls', 'aircall_get_call', 'aircall_search_calls', 'aircall_list_users', 'aircall_list_tags'].includes(name))) {
           continue;
         }
         this.tools.set(name, tool as ToolDefinition);
