@@ -85,7 +85,7 @@ export function createUsersTools(client: AircallClient) {
           total: result.meta.total,
           page: result.meta.current_page,
           per_page: result.meta.per_page,
-          users: result.users.map(formatUser),
+          users: result.users.map((user) => ({ id: user.id })),
         };
       },
     },
