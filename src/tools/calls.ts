@@ -63,7 +63,7 @@ export const recordingControlSchema = z.object({
 export function createCallsTools(client: AircallClient) {
   return {
     aircall_list_calls: {
-      description: 'List calls with optional filters. Returns paginated call history with details including direction, status, duration, and associated contacts/users.',
+      description: 'List calls with optional filters. Returns paginated call history with details including direction, status, duration, and user IDs.',
       parameters: listCallsSchema,
       execute: async (params: z.infer<typeof listCallsSchema>) => {
         const result = await client.get<CallsListResponse>('/calls', params);
@@ -77,61 +77,32 @@ export function createCallsTools(client: AircallClient) {
             status: call.status,
             duration: call.duration,
             started_at: new Date(call.started_at * 1000).toISOString(),
-            raw_digits: call.raw_digits,
-            user: call.user?.name || null,
-            contact: call.contact
-              ? `${call.contact.first_name || ''} ${call.contact.last_name || ''}`.trim() || null
-              : null,
-            number: call.number?.name || null,
-            archived: call.archived,
-            has_recording: !!call.recording,
-            has_voicemail: !!call.voicemail,
-            tags: call.tags.map((t) => t.name),
+            user_id: call.user?.id ?? null,
+            answered_at: call.answered_at ? new Date(call.answered_at * 1000).toISOString() : null,
+            ended_at: call.ended_at ? new Date(call.ended_at * 1000).toISOString() : null,
+            tag_ids: call.tags.map((t) => t.id),
           })),
         };
       },
     },
 
     aircall_get_call: {
-      description: 'Get detailed information about a specific call including comments, tags, participants, and recording URLs.',
+      description: 'Get minimised call analytics by ID.',
       parameters: getCallSchema,
       execute: async (params: z.infer<typeof getCallSchema>) => {
         const result = await client.get<CallResponse>(`/calls/${params.call_id}`);
         const call = result.call;
         return {
           id: call.id,
-          direct_link: call.direct_link,
           direction: call.direction,
           status: call.status,
           duration: call.duration,
           started_at: call.started_at ? new Date(call.started_at * 1000).toISOString() : null,
           answered_at: call.answered_at ? new Date(call.answered_at * 1000).toISOString() : null,
           ended_at: call.ended_at ? new Date(call.ended_at * 1000).toISOString() : null,
-          raw_digits: call.raw_digits,
-          recording_url: call.recording,
-          voicemail_url: call.voicemail,
-          archived: call.archived,
-          missed_call_reason: call.missed_call_reason,
-          user: call.user ? { id: call.user.id, name: call.user.name, email: call.user.email } : null,
-          contact: call.contact
-            ? {
-                id: call.contact.id,
-                name: `${call.contact.first_name || ''} ${call.contact.last_name || ''}`.trim(),
-                company: call.contact.company_name,
-              }
-            : null,
-          number: call.number ? { id: call.number.id, name: call.number.name, digits: call.number.digits } : null,
-          assigned_to: call.assigned_to ? { id: call.assigned_to.id, name: call.assigned_to.name } : null,
-          transferred_by: call.transferred_by?.name || null,
-          transferred_to: call.transferred_to?.name || null,
-          teams: call.teams.map((t) => ({ id: t.id, name: t.name })),
-          tags: call.tags.map((t) => ({ id: t.id, name: t.name })),
-          comments: call.comments.map((c) => ({
-            content: c.content,
-            posted_by: c.posted_by.name,
-            posted_at: new Date(c.posted_at * 1000).toISOString(),
-          })),
-          participants: call.participants,
+          user_id: call.user?.id ?? null,
+          tag_ids: call.tags.map((t) => t.id),
+
         };
       },
     },
@@ -179,12 +150,10 @@ export function createCallsTools(client: AircallClient) {
             status: call.status,
             duration: call.duration,
             started_at: new Date(call.started_at * 1000).toISOString(),
-            raw_digits: call.raw_digits,
-            user: call.user?.name || null,
-            contact: call.contact
-              ? `${call.contact.first_name || ''} ${call.contact.last_name || ''}`.trim() || null
-              : null,
-            tags: call.tags.map((t) => t.name),
+            user_id: call.user?.id ?? null,
+            answered_at: call.answered_at ? new Date(call.answered_at * 1000).toISOString() : null,
+            ended_at: call.ended_at ? new Date(call.ended_at * 1000).toISOString() : null,
+            tag_ids: call.tags.map((t) => t.id),
           })),
         };
       },
