@@ -28,3 +28,8 @@ coverage/
 
 # Misc
 *.tgz
+
+.env.*
+!.env.example
+*.pem
+*.key

@@ -9,7 +9,7 @@ import { AircallMCPServer, type AircallMCPConfig } from './server.js';
 // Parse command line arguments
 function parseArgs(): AircallMCPConfig {
   const args = process.argv.slice(2);
-  const config: AircallMCPConfig = {};
+  const config: AircallMCPConfig = { readOnly: true };
 
   for (const arg of args) {
     if (arg.startsWith('--api-id=')) {
@@ -61,10 +61,10 @@ OPTIONS:
   --api-id=ID         Aircall API ID (or set AIRCALL_API_ID env var)
   --api-token=TOKEN   Aircall API Token (or set AIRCALL_API_TOKEN env var)
   --tools=TOOLS       Comma-separated list of tools or categories to enable
-                      Special values: "all" (default), "read" (read-only tools)
+                      Special values: "all", "read" (read-only tools); default: analytics allowlist
                       Categories: calls, contacts, users, teams, numbers,
                                  tags, webhooks, messages, dialer, company
-  --read-only         Enable read-only mode (disable all write operations)
+  --read-only         Read-only mode (enabled by default; write operations disabled)
   --help, -h          Show this help message
   --version, -v       Show version
 
