@@ -61,7 +61,7 @@ export function createTagsTools(client: AircallClient) {
           total: result.meta.total,
           page: result.meta.current_page,
           per_page: result.meta.per_page,
-          tags: result.tags.map(formatTag),
+          tags: result.tags.map((tag) => ({ id: tag.id })),
         };
       },
     },
